@@ -1,6 +1,7 @@
 ---
 name: Bug report
-about: Create a report to help us improve
+about: Create a report to fix an existing major bug that prohibits us from moving
+  forward
 title: "[BUG]"
 labels: ''
 assignees: ''

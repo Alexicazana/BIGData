@@ -41,7 +41,7 @@ This consistent structure across the splits facilitates a streamlined approach t
 
 ### Research Questions
 
-1.How accurately can unsupervised learning techniques categorize synthetic education content?
+1. How accurately can unsupervised learning techniques categorize synthetic education content?
 
 ### Models and Algorithms
 

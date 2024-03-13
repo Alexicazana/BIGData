@@ -51,7 +51,7 @@ The project employs an unsupervised approach:
 
 1. Unsupervised Learning for Topic Discovery and Clustering: Employing algorithms such as Latent Dirichlet Allocation (LDA) and K-means clustering to identify similar content.  
 
-2. (Attemptive; not main scope) NLP Models: Leveraging transformer-based models like T5 and BERT, fine-tuned to label clusters.
+2. NLP Models: Leveraging transformer-based models like T5 and BERT, fine-tuned to label clusters.
 
 
 ### Comparative Analysis

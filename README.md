@@ -41,20 +41,22 @@ This consistent structure across the splits facilitates a streamlined approach t
 
 ### Research Questions
 
-1. How accurately can unsupervised learning techniques categorize synthetic education content?
+1. How accurately can unsupervised learning techniques categorize synthetic educational content?
 
 ### Models and Algorithms
+- A significant step of our research will be in the data preprocessing of the educatinal content; this is due to the nature of the "text" column, which has significant lenghty text, and will therefore need to be considered in terms of efficiency.
+- A validation set may be employed in order to provide us with comparitive metrics of evaluation.
 
 The project employs an unsupervised approach:
 
-1. Unsupervised Learning for Topic Discovery and Clustering: Employing algorithms such as Latent Dirichlet Allocation (LDA) and K-means clustering to identify similar content 
+1. Unsupervised Learning for Topic Discovery and Clustering: Employing algorithms such as Latent Dirichlet Allocation (LDA) and K-means clustering to identify similar content.  
 
-2. NLP Models: Leveraging transformer-based models like T5 and BERT, fine-tuned to label clusters.
+2. (Attemptive; not main scope) NLP Models: Leveraging transformer-based models like T5 and BERT, fine-tuned to label clusters.
 
 
 ### Comparative Analysis
 
-The project assesses the impact of unsupervised clustering on the efficiency and accuracy of content categorization. Evaluation metrics will focus on   the precision of categorization (accuracy, precision, recall, F1 score), showcasing the effectiveness of combining unsupervised and supervised learning techniques in managing educational content.
+The project assesses the impact of unsupervised clustering on the efficiency and accuracy of **content categorization**. Evaluation metrics will focus on the correctness of categorization (accuracy, precision, recall, F1 score), showcasing the effectiveness of combining unsupervised and supervised learning techniques in managing educational content.
 
 By integrating detailed insights from unsupervised learning with the power of NLP and machine learning, this project will attempt to elevate the accessibility and organization of digital educational materials, providing a transformative tool for students, educators, and content developers alike.
 

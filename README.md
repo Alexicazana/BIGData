@@ -52,6 +52,10 @@ The project assesses the impact of unsupervised clustering on the efficiency and
 - Silhouette score: displays a measure of how close each point in a cluster is to points in the neighbouring clusters (range of [-1, 1]). The higher the Silhouette Coefficients (the closer to +1), the further away the cluster’s samples are from the neighbouring clusters samples. A value of 0 would indicate that the sample is on or very close to the decision boundary between two neighbouring clusters. Negative values, instead, indicate that those samples might have been assigned to the wrong cluster.
 - Calinski-Harabasz Index (Variance Ratio Criterion): the ratio between the within-cluster dispersion and the between-cluster dispersion. The C-H Index is a great way to evaluate the performance of a Clustering algorithm as it does not require information on the ground truth labels. The higher the Index, the better the performance.
 
+
+###Data Pre-Processing
+Working with a dataset totaling 1.5 million rose poses significant computational challenges. We reduced the dataset to 300k rows by focusing on the average token length makes the analysis more feasible, especially since our computational resources are limited. We also used the average token length range which would create a balance between the breadth and depth of coverage, excluding texts that are too small to offer substantial content for analysis or too verbose and sprawling. Also by doing so we would prevent bias in the LDA model, as longer documents could potentially skew the topic distribution.
+
 ---
 
 

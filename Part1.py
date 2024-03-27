@@ -13,9 +13,6 @@ import gensim.corpora as corpora
 from gensim.utils import simple_preprocess
 from gensim.models import CoherenceModel
 
-#Dask
-import dask.dataframe as dd
-
 
 #spacy
 from nltk.corpus import stopwords
@@ -32,18 +29,14 @@ khan = load_dataset("HuggingFaceTB/cosmopedia", "khanacademy",split="train[:50%]
 openstax = load_dataset("HuggingFaceTB/cosmopedia", "openstax", split="train[:50%]")
 stanford = load_dataset("HuggingFaceTB/cosmopedia", "stanford", split="train[:50%]")
 
-pd_df_stanford = pd.DataFrame(stanford)
-dd_df_stanford = dd.from_pandas(pd_df_stanford, npartitions=8)
-filtered_stanford_df = dd_df_stanford. loc[(dd_df_stanford.text_token_length>=758)&(dd_df_stanford.text_token_length<=1010)]
+df_stanford = pd.DataFrame(stanford)
+filtered_stanford_df = df_stanford.loc[(df_stanford.text_token_length>=758)&(df_stanford.text_token_length<=1010)]
 
-pd_df_openstax = pd.DataFrame(openstax)
-dd_df_openstax = dd.from_pandas(pd_df_openstax, npartitions=8)
-filtered_openstax_df = dd_df_openstax.loc[(dd_df_openstax.text_token_length>=544)&(dd_df_openstax.text_token_length<=740)]
+df_openstax = pd.DataFrame(openstax)
+filtered_openstax_df = df_openstax.loc[(df_openstax.text_token_length>=544)&(df_openstax.text_token_length<=740)]
 
-pd_df_khan = pd.DataFrame(khan)
-dd_df_khan = dd.from_pandas(pd_df_khan, npartitions=8)
+df_khan = pd.DataFrame(khan)
 filtered_khan_df = df_khan.loc[(df_khan.text_token_length>=1193)&(df_khan.text_token_length<=1449)]
-
 text1 = filtered_stanford_df['text'].tolist()
 text2 = filtered_openstax_df['text'].tolist()
 text3 = filtered_khan_df['text'].tolist()

@@ -1,5 +1,6 @@
 from datasets import load_dataset
 import pandas as pd
+import dask.dataframe as dd
 import spacy
 import nltk
 nltk.download("stopwords")
@@ -25,18 +26,21 @@ from nltk.corpus import stopwords
 from joblib import Parallel, delayed
 
 
-khan = load_dataset("HuggingFaceTB/cosmopedia", "khanacademy",split="train[:50%]")
-openstax = load_dataset("HuggingFaceTB/cosmopedia", "openstax", split="train[:50%]")
-stanford = load_dataset("HuggingFaceTB/cosmopedia", "stanford", split="train[:50%]")
+khan = load_dataset("HuggingFaceTB/cosmopedia", "khanacademy",split="train")
+openstax = load_dataset("HuggingFaceTB/cosmopedia", "openstax", split="train")
+stanford = load_dataset("HuggingFaceTB/cosmopedia", "stanford", split="train")
 
-df_stanford = pd.DataFrame(stanford)
-filtered_stanford_df = df_stanford.loc[(df_stanford.text_token_length>=758)&(df_stanford.text_token_length<=1010)]
+partitions_stanford = [delayed(pd.DataFrame)(d) for d in stanford]
+stanford_dask_dataframe = dd.from_delayed(partitions_stanford)
 
-df_openstax = pd.DataFrame(openstax)
-filtered_openstax_df = df_openstax.loc[(df_openstax.text_token_length>=544)&(df_openstax.text_token_length<=740)]
+partitions_khan = [delayed(pd.DataFrame)(d) for d in khan]
+khan_dask_dataframe = dd.from_delayed(partitions_khan)
 
-df_khan = pd.DataFrame(khan)
-filtered_khan_df = df_khan.loc[(df_khan.text_token_length>=1193)&(df_khan.text_token_length<=1449)]
+partitions_openstax = [delayed(pd.DataFrame)(d) for d in openstax]
+openstax_dask_dataframe = dd.from_delayed(partitions_openstax)
+
+
+
 text1 = filtered_stanford_df['text'].tolist()
 text2 = filtered_openstax_df['text'].tolist()
 text3 = filtered_khan_df['text'].tolist()

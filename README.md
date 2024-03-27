@@ -55,3 +55,12 @@ The project assesses the impact of unsupervised clustering on the efficiency and
 ---
 
 
+------
+# Project Part 1
+
+## Preprocessing/Cleaning
+
+
+## 
+
+

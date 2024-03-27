@@ -1,4 +1,4 @@
-from datasets import load_dataset
+# from datasets import load_dataset
 import pandas as pd
 # import spacy
 # spacy.load("en_core_web_sm")
@@ -8,8 +8,9 @@ import pandas as pd
 
 import nltk
 nltk.download("stopwords")
+nltk.download('punkt')
 
-from gensim.parsing.preprocessing import remove_stopwords
+# from gensim.parsing.preprocessing import remove_stopwords
 
 import numpy as np
 
@@ -22,10 +23,10 @@ from dask.diagnostics import ProgressBar
 
 
 #Gensim
-import gensim
-import gensim.corpora as corpora
-from gensim.utils import simple_preprocess
-from gensim.models import CoherenceModel
+# import gensim
+# import gensim.corpora as corpora
+# from gensim.utils import simple_preprocess
+# from gensim.models import CoherenceModel
 
 
 from nltk.corpus import stopwords
@@ -36,8 +37,6 @@ from nltk.stem import WordNetLemmatizer
 # import pyLDAvis
 # import pyLDAvis.gensim
 
-###Parallel Processing
-from joblib import Parallel, delayed
 
 df_openstax = dd.read_parquet("Openstax/*.parquet")
 df_khan = dd.read_parquet("Khan/*.parquet")
@@ -47,12 +46,12 @@ text1 = df_openstax['text'].compute().tolist()
 text2 = df_khan['text'].compute().tolist()
 text3 = df_stanford['text'].compute().tolist()
 
-# df_all = dd.concat([df_openstax, df_khan, df_stanford])
-# df_repartitioned = df_all.repartition(npartitions=40)
+df_all = dd.concat([df_openstax, df_khan, df_stanford])
+df_repartitioned = df_all.repartition(npartitions=40)
 
 sum_text = text1 + text2 + text3
 
-# print(sum_text[:5])
+print(sum_text[:5])
 
 # Convert the list to a DataFrame
 texts_df = pd.DataFrame(sum_text, columns=['text'])
@@ -62,6 +61,8 @@ texts_df.to_parquet('lda_texts.parquet')
 
 texts_ddf = dd.read_parquet('lda_texts.parquet')
 # print(texts_df.head())
+
+
 
 texts = db.from_sequence(texts_ddf, npartitions=16)
 
@@ -81,27 +82,70 @@ texts = db.from_sequence(texts_ddf, npartitions=16)
 #         new_text = [token.lemma_ for token in doc if token.pos_ in allowed_postags]
 #         results.append(" ".join(new_text))
 #     return results
-def lemmatize_batch(texts, allowed_postags=["NOUN", "ADJ", "VERB", "ADV"]):
-  def preprocess_partition(text_partition):
-      results = []
-      for text in text_partition:
-          preprocessed_text = preprocess_text(text, allowed_postags=allowed_postags)
-          results.append(preprocessed_text)
-      return results
-  return texts.map_partitions(preprocess_partition)
+# def lemmatize_batch(texts, allowed_postags=["NOUN", "ADJ", "VERB", "ADV"]):
+#   def preprocess_partition(text_partition):
+#       results = []
+#       for text in text_partition:
+#           preprocessed_text = preprocess_text(text, allowed_postags=allowed_postags)
+#           results.append(preprocessed_text)
+#       return results
+#   return texts.map_partitions(preprocess_partition)
 
-import dask.bag as db
+
+# def preprocess_text(text, stopwords=stopwords.words('english'), allowed_postags=["NOUN", "ADJ", "VERB", "ADV"]):
+#   # ... (your preprocessing logic here) ...
+#   return preprocessed_text
+
+# texts_bag = db.from_sequence(texts_ddf)
+# lemmatized_texts_bag = texts_bag.map(preprocess_text)
+
+# # compute the results when needed 
+# with ProgressBar():
+#     lemmatized_texts = lemmatized_texts_bag.compute()
 
 def preprocess_text(text, stopwords=stopwords.words('english'), allowed_postags=["NOUN", "ADJ", "VERB", "ADV"]):
-  # ... (your preprocessing logic here) ...
-  return preprocessed_text
+  """
+  This function preprocesses text by removing stopwords and performing lemmatization.
 
-texts_bag = db.from_sequence(texts_ddf)
-lemmatized_texts_bag = texts_bag.map(preprocess_text)
+  Args:
+      text: The text to be preprocessed.
+      stopwords: A list of stopwords to remove (defaults to English stopwords).
+      allowed_postags: A list of allowed part-of-speech tags for lemmatization (defaults to nouns, adjectives, verbs, and adverbs).
 
-# compute the results when needed 
-with ProgressBar():
-    lemmatized_texts = lemmatized_texts_bag.compute()
+  Returns:
+      The preprocessed text as a string.
+  """
+  # Tokenize the text
+  tokens = nltk.word_tokenize(text)
+
+  # Lowercase tokens
+  tokens = [token.lower() for token in tokens]
+
+  # Remove stopwords
+  filtered_tokens = [token for token in tokens if token not in stopwords]
+
+  # # Lemmatization with part-of-speech filtering
+  # lemmatizer = WordNetLemmatizer()
+  # lemmatized_tokens = [lemmatizer.lemmatize(token, pos=tag) 
+  #                       for token, tag in nltk.pos_tag(filtered_tokens) 
+  #                       if tag in allowed_postags]
+
+  # Join the preprocessed tokens back into text
+  return " ".join(filtered_tokens) 
+
+
+
+
+def lemmatize_batch(texts, allowed_postags=["NOUN", "ADJ", "VERB", "ADV"]):
+  results = []
+  for text in texts:
+      preprocessed_text = preprocess_text(text, allowed_postags=allowed_postags)
+      
+      results.append(preprocessed_text)
+  return results
+
+hey = lemmatize_batch(texts_ddf.compute())
+print(hey)
 
 
 # Process texts in parallel using Dask Bag
